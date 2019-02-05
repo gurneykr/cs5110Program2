@@ -61,18 +61,6 @@ def runGame():
                 terminate()
             elif event.type == KEYDOWN:
                 pass
-                # if (event.key == K_LEFT or event.key == K_a) and direction != RIGHT:
-                #     direction = LEFT
-                # elif (event.key == K_RIGHT or event.key == K_d) and direction != LEFT:
-                #     direction = RIGHT
-                # elif (event.key == K_UP or event.key == K_w) and direction != DOWN:
-                #     direction = UP
-                # elif (event.key == K_DOWN or event.key == K_s) and direction != UP:
-                #     direction = DOWN
-                # elif event.key == K_ESCAPE:
-                #     terminate()
-
-        # newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y']}
 
         # check if the worm has hit itself or the edge
         #if roombaCoords[HEAD]['x'] == -1 or roombaCoords[HEAD]['x'] == CELLWIDTH or roombaCoords[HEAD]['y'] == -1 or roombaCoords[HEAD]['y'] == CELLHEIGHT:
@@ -83,28 +71,29 @@ def runGame():
             x = 0
             direction = randomDirection()
             print("newDirection = ", direction)
-        elif roombaCoords[HEAD]['x'] >= CELLWIDTH:
-            x = CELLWIDTH
+        if roombaCoords[HEAD]['x'] >= CELLWIDTH:
+            x = CELLWIDTH - 1
             direction = randomDirection()
             print("newDirection = ", direction)
-        elif roombaCoords[HEAD]['y'] <= -1:
+        if roombaCoords[HEAD]['y'] <= -1:
             y = 0
             direction = randomDirection()
             print("newDirection = ", direction)
-        elif roombaCoords[HEAD]['y'] >= CELLHEIGHT:
-            y = CELLHEIGHT
+        if roombaCoords[HEAD]['y'] >= CELLHEIGHT:
+            y = CELLHEIGHT - 1
             direction = randomDirection()
             print("newDirection = ", direction)
 
-        newHead = {'x': x, 'y': y}
+        #newHead = {'x': x, 'y': y}
+
         if direction == UP:
-            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
+            newHead = {'x': x, 'y': y - 1}
         elif direction == DOWN:
-            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] + 1}
+            newHead = {'x': x, 'y': y + 1}
         elif direction == LEFT:
-            newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
+            newHead = {'x': x - 1, 'y': y}
         elif direction == RIGHT:
-            newHead = {'x': roombaCoords[HEAD]['x'] + 1, 'y': roombaCoords[HEAD]['y']}
+            newHead = {'x': x + 1, 'y': y}
 
         print("roombaCoords:", roombaCoords[HEAD])
         # check if worm has eaten an apply
@@ -113,16 +102,6 @@ def runGame():
             dirt = getRandomLocation() # set a new dirt somewhere
         else:
             del roombaCoords[-1] # remove worm's tail segment
-
-        # move the worm by adding a segment in the direction it is moving
-        # if direction == UP:
-        #     newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
-        # elif direction == DOWN:
-        #     newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] + 1}
-        # elif direction == LEFT:
-        #     newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
-        # elif direction == RIGHT:
-        #     newHead = {'x': roombaCoords[HEAD]['x'] + 1, 'y': roombaCoords[HEAD]['y']}
 
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
