@@ -76,23 +76,27 @@ def runGame():
 
         # check if the worm has hit itself or the edge
         #if roombaCoords[HEAD]['x'] == -1 or roombaCoords[HEAD]['x'] == CELLWIDTH or roombaCoords[HEAD]['y'] == -1 or roombaCoords[HEAD]['y'] == CELLHEIGHT:
+        x = roombaCoords[HEAD]['x']
+        y = roombaCoords[HEAD]['y']
+
         if roombaCoords[HEAD]['x'] <= -1:
-            newHead = {'x': roombaCoords[HEAD]['x'] +1, 'y': roombaCoords[HEAD]['y']}
+            x = 0
             direction = randomDirection()
             print("newDirection = ", direction)
         elif roombaCoords[HEAD]['x'] >= CELLWIDTH:
-            newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
+            x = CELLWIDTH
             direction = randomDirection()
             print("newDirection = ", direction)
         elif roombaCoords[HEAD]['y'] <= -1:
-            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y']+1}
+            y = 0
             direction = randomDirection()
             print("newDirection = ", direction)
         elif roombaCoords[HEAD]['y'] >= CELLHEIGHT:
-            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
+            y = CELLHEIGHT
             direction = randomDirection()
             print("newDirection = ", direction)
 
+        newHead = {'x': x, 'y': y}
         if direction == UP:
             newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
         elif direction == DOWN:
