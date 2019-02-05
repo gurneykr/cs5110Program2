@@ -7,8 +7,8 @@ WINDOWHEIGHT = 480
 CELLSIZE = 20
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
-CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
+CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)#24
+CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)#32
 
 #             R    G    B
 WHITE     = (255, 255, 255)
@@ -75,18 +75,34 @@ def runGame():
         # newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y']}
 
         # check if the worm has hit itself or the edge
-        if roombaCoords[HEAD]['x'] == -1 or roombaCoords[HEAD]['x'] == CELLWIDTH or roombaCoords[HEAD]['y'] == -1 or roombaCoords[HEAD]['y'] == CELLHEIGHT:
-            newHead = rotateRoomba(direction, roombaCoords)
-        else:
-            if direction == UP:
-                newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
-            elif direction == DOWN:
-                newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] + 1}
-            elif direction == LEFT:
-                newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
-            elif direction == RIGHT:
-                newHead = {'x': roombaCoords[HEAD]['x'] + 1, 'y': roombaCoords[HEAD]['y']}
+        #if roombaCoords[HEAD]['x'] == -1 or roombaCoords[HEAD]['x'] == CELLWIDTH or roombaCoords[HEAD]['y'] == -1 or roombaCoords[HEAD]['y'] == CELLHEIGHT:
+        if roombaCoords[HEAD]['x'] <= -1:
+            newHead = {'x': roombaCoords[HEAD]['x'] +1, 'y': roombaCoords[HEAD]['y']}
+            direction = randomDirection()
+            print("newDirection = ", direction)
+        elif roombaCoords[HEAD]['x'] >= CELLWIDTH:
+            newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
+            direction = randomDirection()
+            print("newDirection = ", direction)
+        elif roombaCoords[HEAD]['y'] <= -1:
+            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y']+1}
+            direction = randomDirection()
+            print("newDirection = ", direction)
+        elif roombaCoords[HEAD]['y'] >= CELLHEIGHT:
+            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
+            direction = randomDirection()
+            print("newDirection = ", direction)
 
+        if direction == UP:
+            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
+        elif direction == DOWN:
+            newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] + 1}
+        elif direction == LEFT:
+            newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
+        elif direction == RIGHT:
+            newHead = {'x': roombaCoords[HEAD]['x'] + 1, 'y': roombaCoords[HEAD]['y']}
+
+        print("roombaCoords:", roombaCoords[HEAD])
         # check if worm has eaten an apply
         if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
             # don't remove worm's tail segment
@@ -111,16 +127,19 @@ def runGame():
         drawDirt(dirt)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-def rotateRoomba(direction, roombaCoords):
-    if direction == RIGHT: #turn down
-        newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] + 1}
-    elif direction == DOWN: #turn left
-        newHead = {'x': roombaCoords[HEAD]['x'] - 1, 'y': roombaCoords[HEAD]['y']}
-    elif direction == LEFT:#turn up
-        newHead = {'x': roombaCoords[HEAD]['x'], 'y': roombaCoords[HEAD]['y'] - 1}
-    elif direction == UP:#turn right
-        newHead = {'x': roombaCoords[HEAD]['x'] + 1, 'y': roombaCoords[HEAD]['y']}
-    return newHead
+
+def randomDirection():
+    direction = random.randint(1, 4)
+    if direction ==1:
+        newDirection = UP
+    elif direction == 2:
+        newDirection = RIGHT
+    elif direction == 3:
+        newDirection = DOWN
+    elif direction == 4:
+        newDirection = LEFT
+    return newDirection
+
 
 def drawPressKeyMsg():
     pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
