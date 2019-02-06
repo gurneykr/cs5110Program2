@@ -61,8 +61,10 @@ def runGame():
     direction = RIGHT
 
     # Start the dirt in a random place.
-    #dirt = getRandomLocation()
-    dirt = {'x': 0, 'y': 0}
+    dirt_list = []
+    for i in range(0, random.randint(1, 10)):
+        dirt_list.append(getRandomLocation())
+
     count = 0
 
     go_left_flag = False
@@ -79,7 +81,7 @@ def runGame():
         # if (count % 35) == 0:
         #    direction = randomDirection()
         # # check if the worm has hit itself or the edge
-        #if roombaCoords[HEAD]['x'] == -1 or roombaCoords[HEAD]['x'] == CELLWIDTH or roombaCoords[HEAD]['y'] == -1 or roombaCoords[HEAD]['y'] == CELLHEIGHT:
+
         x = roombaCoords[HEAD]['x']
         y = roombaCoords[HEAD]['y']
 
@@ -94,20 +96,20 @@ def runGame():
                 x = 0
                 direction = DOWN
                 go_right_flag = True
-                print("newDirection = ", direction)
+                #print("newDirection = ", direction)
             if roombaCoords[HEAD]['x'] >= CELLWIDTH:#hit the right wall
                 x = CELLWIDTH - 1
                 direction = DOWN
                 go_left_flag = True
-                print("newDirection = ", direction)
+                #print("newDirection = ", direction)
             if roombaCoords[HEAD]['y'] <= -1:#hit the top wall
                 y = 0
                 direction = randomDirection()
-                print("newDirection = ", direction)
+                #print("newDirection = ", direction)
             if roombaCoords[HEAD]['y'] >= CELLHEIGHT:#hit the bottom wall
                 y = CELLHEIGHT - 1
                 direction = randomDirection()
-                print("newDirection = ", direction)
+                #print("newDirection = ", direction)
 
         if direction == UP:
             newHead = {'x': x, 'y': y - 1}
@@ -118,25 +120,37 @@ def runGame():
         elif direction == RIGHT:
             newHead = {'x': x + 1, 'y': y}
 
-        print("newHead:",newHead)
+        # print("newHead:",newHead)
         # check if worm has eaten an apply
-        if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
-            # don't remove worm's tail segment
-            dirt = getRandomLocation() # set a new dirt somewhere
-            del roombaCoords[-1]  # remove worm's tail segment
-        else:
-            del roombaCoords[-1] # remove worm's tail segment
+        for dirt in dirt_list:
+            if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
+                dirt_list.remove(dirt)
+                # del roombaCoords[-1]  # remove worm's tail segment
+        del roombaCoords[-1] # remove worm's tail segment
+
+        for dirt in dirt_list:
+            print("dirt: ",dirt)
+            drawDirt(dirt)
 
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
         drawWorm(roombaCoords)
-        drawDirt(dirt)
+        #drawDirt(dirt)
         #drawBarrier(barrierCoords)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-        count += 1
-        print("count: ", count)
+        # count += 1
+        # print("count: ", count)
+
+def getVacummedDirt(roombaCoords, dirtList):
+    index = -1
+    for i in range(len(dirtList)):
+        dirt = dirtList[i]
+        if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
+            index = i
+            break
+    return index
 
 def randomDirection():
     direction = random.randint(1, 4)
