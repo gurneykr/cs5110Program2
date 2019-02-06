@@ -1,7 +1,7 @@
 import random, pygame, sys
 from pygame.locals import *
 
-FPS = 15
+FPS = 14
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 20
@@ -45,30 +45,27 @@ def main():
 
 def runGame():
     # Set a random start point.
-    # startx = random.randint(5, CELLWIDTH - 6)
-    # starty = random.randint(5, CELLHEIGHT - 6)
-    # roombaCoords = [{'x': startx,     'y': starty},
-    #               {'x': startx - 1, 'y': starty},
-    #               {'x': startx - 2, 'y': starty}]
-
-    startx = random.randint(5, CELLWIDTH - 6)
-    starty = random.randint(5, CELLHEIGHT - 6)
-    barrierCoords = [{'x': startx,  'y': starty},
-                  {'x': startx - 1, 'y': starty},
-                  {'x': startx - 2, 'y': starty}]
 
     roombaCoords = [{'x': 0, 'y': 0}]
     direction = RIGHT
 
+    barrier_list = []
+
+    for i in range(random.randint(3, 7)):
+        barrier_list.append(getRandomLocation())
+
     # Start the dirt in a random place.
     dirt_list = []
-    for i in range(0, random.randint(1, 10)):
+    for i in range(random.randint(1, 10)):
         dirt_list.append(getRandomLocation())
 
     count = 0
 
     go_left_flag = False
     go_right_flag = False
+    go_down_flag = False
+    go_up_flag = False
+
     while True: # main game loop
 
         for event in pygame.event.get(): # event handling loop
@@ -88,28 +85,47 @@ def runGame():
         if go_left_flag == True:
             direction = LEFT
             go_left_flag = False
-        elif go_right_flag == True:
+        if go_right_flag == True:
             direction = RIGHT
             go_right_flag = False
+        if go_down_flag == True:
+            direction = DOWN
+            go_down_flag = False
+        if go_up_flag == True:
+            direction = UP
+            go_up_flag = False
         else:
             if roombaCoords[HEAD]['x'] <= -1:#hit the left wall
                 x = 0
                 direction = DOWN
                 go_right_flag = True
-                #print("newDirection = ", direction)
             if roombaCoords[HEAD]['x'] >= CELLWIDTH:#hit the right wall
                 x = CELLWIDTH - 1
                 direction = DOWN
                 go_left_flag = True
-                #print("newDirection = ", direction)
             if roombaCoords[HEAD]['y'] <= -1:#hit the top wall
                 y = 0
-                direction = randomDirection()
-                #print("newDirection = ", direction)
+                direction = RIGHT
+                go_down_flag = True
             if roombaCoords[HEAD]['y'] >= CELLHEIGHT:#hit the bottom wall
                 y = CELLHEIGHT - 1
-                direction = randomDirection()
-                #print("newDirection = ", direction)
+                direction = RIGHT
+                go_up_flag = True
+
+        for barrier in barrier_list:
+            if roombaCoords[HEAD]['x'] == barrier['x'] and roombaCoords[HEAD]['y'] == barrier['y']:
+                if direction == LEFT:  # if it hit on the right side go down then left
+                    direction = DOWN
+                    go_left_flag = True
+                elif direction == RIGHT:  # if hit on the left side go down then right
+                    direction = DOWN
+                    go_right_flag = True
+                elif direction == DOWN: #if hit on the top side go right then down
+                    direction = RIGHT
+                    go_down_flag = True
+                elif direction == UP: #if hit on the bottom side go left then up
+                    direction = LEFT
+                    go_up_flag = True
 
         if direction == UP:
             newHead = {'x': x, 'y': y - 1}
@@ -120,7 +136,6 @@ def runGame():
         elif direction == RIGHT:
             newHead = {'x': x + 1, 'y': y}
 
-        # print("newHead:",newHead)
         # check if worm has eaten an apply
         for dirt in dirt_list:
             if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
@@ -128,29 +143,21 @@ def runGame():
                 # del roombaCoords[-1]  # remove worm's tail segment
         del roombaCoords[-1] # remove worm's tail segment
 
-        for dirt in dirt_list:
-            print("dirt: ",dirt)
-            drawDirt(dirt)
-
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
+
+        for dirt in dirt_list:
+            drawDirt(dirt)
+
         drawWorm(roombaCoords)
-        #drawDirt(dirt)
-        #drawBarrier(barrierCoords)
+        for barrier in barrier_list:
+            drawBarrier(barrier)
+
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         # count += 1
         # print("count: ", count)
-
-def getVacummedDirt(roombaCoords, dirtList):
-    index = -1
-    for i in range(len(dirtList)):
-        dirt = dirtList[i]
-        if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
-            index = i
-            break
-    return index
 
 def randomDirection():
     direction = random.randint(1, 4)
