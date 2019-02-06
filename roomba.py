@@ -1,7 +1,7 @@
 import random, pygame, sys
 from pygame.locals import *
 
-FPS = 14
+#FPS = 14
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 20
@@ -19,6 +19,7 @@ DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 BROWN     = (128,  0,    0)
 BLUE     =  (  0, 255, 255)
+DARKBLUE =  (0,   0,   225)
 BGCOLOR = BLACK
 
 UP = 'up'
@@ -136,21 +137,32 @@ def runGame():
         elif direction == RIGHT:
             newHead = {'x': x + 1, 'y': y}
 
+        FPS = 14
         # check if worm has eaten an apply
         for dirt in dirt_list:
             if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
                 dirt_list.remove(dirt)
+                FPS = 1
                 # del roombaCoords[-1]  # remove worm's tail segment
         del roombaCoords[-1] # remove worm's tail segment
+
+        if len(dirt_list) == 0:
+            print("all done")
+            newHead = {'x': 0, 'y': 0}
+            # return
 
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
+        drawBattery({'x': 0, 'y': 0})
+        drawBattery({'x': 1, 'y': 0})
+        drawBattery({'x': 0, 'y': 1})
+        drawBattery({'x': 1, 'y': 1})
 
         for dirt in dirt_list:
             drawDirt(dirt)
 
-        drawWorm(roombaCoords)
+        drawRoomba(roombaCoords)
         for barrier in barrier_list:
             drawBarrier(barrier)
 
@@ -216,7 +228,7 @@ def showStartScreen():
             pygame.event.get() # clear event queue
             return
         pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        FPSCLOCK.tick(14)
         degrees1 += 3 # rotate by 3 degrees each frame
         degrees2 += 7 # rotate by 7 degrees each frame
 
@@ -257,8 +269,13 @@ def showGameOverScreen():
 #     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
 #     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
+def drawBattery(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    dirtRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    pygame.draw.rect(DISPLAYSURF, DARKBLUE, dirtRect)
 
-def drawWorm(roombaCoords):
+def drawRoomba(roombaCoords):
     for coord in roombaCoords:
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
