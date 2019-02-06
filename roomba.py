@@ -1,7 +1,7 @@
 import random, pygame, sys
 from pygame.locals import *
 
-FPS = 7
+FPS = 15
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 20
@@ -64,6 +64,9 @@ def runGame():
     #dirt = getRandomLocation()
     dirt = {'x': 0, 'y': 0}
     count = 0
+
+    go_left_flag = False
+    go_right_flag = False
     while True: # main game loop
 
         for event in pygame.event.get(): # event handling loop
@@ -80,38 +83,31 @@ def runGame():
         x = roombaCoords[HEAD]['x']
         y = roombaCoords[HEAD]['y']
 
-        go_left_flag = False
-        go_right_flag = False
-
-        if roombaCoords[HEAD]['x'] <= -1:
-            x = 0
-            direction = DOWN
-            go_right_flag = True
-
-            # direction = randomDirection()
-            print("newDirection = ", direction)
-        if roombaCoords[HEAD]['x'] >= CELLWIDTH:
-            x = CELLWIDTH - 1
-            direction = DOWN
-            go_left_flag = True
-            # direction = randomDirection()
-            print("newDirection = ", direction)
-        if roombaCoords[HEAD]['y'] <= -1:
-            y = 0
-            direction = randomDirection()
-            print("newDirection = ", direction)
-        if roombaCoords[HEAD]['y'] >= CELLHEIGHT:
-            y = CELLHEIGHT - 1
-            direction = randomDirection()
-            print("newDirection = ", direction)
-
-        #newHead = {'x': x, 'y': y}
-        if go_left_flag:
+        if go_left_flag == True:
             direction = LEFT
             go_left_flag = False
-        if go_right_flag:
+        elif go_right_flag == True:
             direction = RIGHT
             go_right_flag = False
+        else:
+            if roombaCoords[HEAD]['x'] <= -1:#hit the left wall
+                x = 0
+                direction = DOWN
+                go_right_flag = True
+                print("newDirection = ", direction)
+            if roombaCoords[HEAD]['x'] >= CELLWIDTH:#hit the right wall
+                x = CELLWIDTH - 1
+                direction = DOWN
+                go_left_flag = True
+                print("newDirection = ", direction)
+            if roombaCoords[HEAD]['y'] <= -1:#hit the top wall
+                y = 0
+                direction = randomDirection()
+                print("newDirection = ", direction)
+            if roombaCoords[HEAD]['y'] >= CELLHEIGHT:#hit the bottom wall
+                y = CELLHEIGHT - 1
+                direction = randomDirection()
+                print("newDirection = ", direction)
 
         if direction == UP:
             newHead = {'x': x, 'y': y - 1}
@@ -122,7 +118,7 @@ def runGame():
         elif direction == RIGHT:
             newHead = {'x': x + 1, 'y': y}
 
-        print("roombaCoords:", roombaCoords[HEAD])
+        print("newHead:",newHead)
         # check if worm has eaten an apply
         if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
             # don't remove worm's tail segment
