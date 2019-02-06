@@ -1,4 +1,5 @@
 import random, pygame, sys
+import time
 from pygame.locals import *
 
 #FPS = 14
@@ -46,8 +47,9 @@ def main():
 
 def runGame():
     # Set a random start point.
+    start = time.clock()
 
-    roombaCoords = [{'x': 0, 'y': 0}]
+    roombaCoords = [{'x': 1, 'y': 0}]
     direction = RIGHT
 
     barrier_list = []
@@ -66,6 +68,7 @@ def runGame():
     go_right_flag = False
     go_down_flag = False
     go_up_flag = False
+    all_done_flag = False
 
     while True: # main game loop
 
@@ -146,14 +149,21 @@ def runGame():
                 # del roombaCoords[-1]  # remove worm's tail segment
         del roombaCoords[-1] # remove worm's tail segment
 
-        if len(dirt_list) == 0:
+        elapsed = (time.clock() - start)
+        print("elapsed time: ", elapsed)
+
+        if (len(dirt_list) == 0) or elapsed > 10:
             print("all done")
             newHead = {'x': 0, 'y': 0}
+            all_done_flag = True
             # return
 
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
+
+
+
         drawBattery({'x': 0, 'y': 0})
         drawBattery({'x': 1, 'y': 0})
         drawBattery({'x': 0, 'y': 1})
@@ -168,8 +178,9 @@ def runGame():
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-        # count += 1
-        # print("count: ", count)
+
+        if all_done_flag == True:
+            return
 
 def randomDirection():
     direction = random.randint(1, 4)
@@ -244,8 +255,8 @@ def getRandomLocation():
 
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    gameSurf = gameOverFont.render('Game', True, WHITE)
-    overSurf = gameOverFont.render('Over', True, WHITE)
+    gameSurf = gameOverFont.render('All', True, WHITE)
+    overSurf = gameOverFont.render('Done', True, WHITE)
     gameRect = gameSurf.get_rect()
     overRect = overSurf.get_rect()
     gameRect.midtop = (WINDOWWIDTH / 2, 10)
