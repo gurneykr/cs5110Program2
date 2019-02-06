@@ -54,6 +54,7 @@ def runGame():
 
     barrier_list = []
 
+    #start the barriers in a random place
     for i in range(random.randint(3, 7)):
         barrier_list.append(getRandomLocation())
 
@@ -61,8 +62,6 @@ def runGame():
     dirt_list = []
     for i in range(random.randint(1, 10)):
         dirt_list.append(getRandomLocation())
-
-    count = 0
 
     go_left_flag = False
     go_right_flag = False
@@ -79,10 +78,6 @@ def runGame():
             elif event.type == KEYDOWN:
                 pass
 
-        # if (count % 35) == 0:
-        #    direction = randomDirection()
-        # # check if the worm has hit itself or the edge
-
         x = roombaCoords[HEAD]['x']
         y = roombaCoords[HEAD]['y']
 
@@ -98,7 +93,7 @@ def runGame():
         if go_up_flag == True:
             direction = UP
             go_up_flag = False
-        else:
+        else:# check if the worm has hit the edge
             if roombaCoords[HEAD]['x'] <= -1:#hit the left wall
                 x = 0
                 direction = DOWN
@@ -152,7 +147,7 @@ def runGame():
         elapsed = (time.clock() - start)
         print("elapsed time: ", elapsed)
 
-        if (len(dirt_list) == 0) or elapsed > 10:
+        if (len(dirt_list) == 0) or elapsed > 180: #stop after 3 minutes/ 180 seconds
             print("all done")
             newHead = {'x': 0, 'y': 0}
             all_done_flag = True
@@ -161,8 +156,6 @@ def runGame():
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
-
-
 
         drawBattery({'x': 0, 'y': 0})
         drawBattery({'x': 1, 'y': 0})
@@ -273,12 +266,6 @@ def showGameOverScreen():
         if checkForKeyPress():
             pygame.event.get() # clear event queue
             return
-
-# def drawScore(score):
-#     scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
-#     scoreRect = scoreSurf.get_rect()
-#     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
-#     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
 def drawBattery(coord):
     x = coord['x'] * CELLSIZE
