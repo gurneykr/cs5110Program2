@@ -143,7 +143,7 @@ def runGame():
             if roombaCoords[HEAD]['x'] == dirt['x'] and roombaCoords[HEAD]['y'] == dirt['y']:
                 dirt_list.remove(dirt)
                 FPS = 1
-                # del roombaCoords[-1]  # remove worm's tail segment
+
         del roombaCoords[-1] # remove worm's tail segment
 
         elapsed = (time.clock() - start)
@@ -153,7 +153,6 @@ def runGame():
             print("all done")
             newHead = {'x': 0, 'y': 0}
             all_done_flag = True
-            # return
 
         roombaCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
