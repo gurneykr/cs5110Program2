@@ -63,6 +63,8 @@ def runGame():
     for i in range(random.randint(1, 10)):
         dirt_list.append(getRandomLocation())
 
+    count = 0
+
     go_left_flag = False
     go_right_flag = False
     go_down_flag = False
@@ -174,6 +176,7 @@ def runGame():
 
         if all_done_flag == True:
             return
+        count+=1
 
 def randomDirection():
     direction = random.randint(1, 4)
