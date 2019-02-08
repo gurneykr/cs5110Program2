@@ -1,0 +1,12 @@
+For my Roomba Assignment I implemented the following:
+-the roomba is green, dirt is brown, barriers are light blue, and the battery charger is dark blue
+-the cleaning path is back and forth on the rows, until it gets to the bottom then it will go up and down the columns
+-if the roomba hits a barrier it will move around it
+-a random amount of barriers and dirt is different each time
+-I simulated the vacuum going slower on the dirty areas by changing the frames per second
+-if all of the dirt is gone the roomba goes back to the battery charger
+-sometimes not all of the dirt can be picked up so I simulated a low battery
+by setting a timer, if the timer exceeds 2 minutes the roomba goes back to the battery charger
+-I implemented it with only 1 roomba but it could be extended to have two roombas going at the
+same time. I would probably have one roomba going back and forth on the rows and the other going
+up and down the columns, if they hit each other I would slow on down to let the other pass

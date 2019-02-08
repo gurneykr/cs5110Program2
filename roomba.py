@@ -149,7 +149,7 @@ def runGame():
         elapsed = (time.clock() - start)
         print("elapsed time: ", elapsed)
 
-        if (len(dirt_list) == 0) or elapsed > 180: #stop after 3 minutes/ 180 seconds
+        if (len(dirt_list) == 0) or elapsed > 120: #stop after 3 minutes/ 180 seconds
             print("all done")
             newHead = {'x': 0, 'y': 0}
             all_done_flag = True
